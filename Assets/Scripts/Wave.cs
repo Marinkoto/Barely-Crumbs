@@ -7,25 +7,49 @@ using UnityEngine;
 public class Wave
 {
     [Header("Components")]
-    [SerializeField] List<GameObject> enemies;
+    [SerializeField] private List<GameObject> enemies;
     [Header("Parameters")]
-    [SerializeField] float enemySpawnInterval;
+    [SerializeField] private float enemySpawnInterval = 1f;
 
     private int aliveEnemies = 0;
+    private Transform spawnPoint;
 
-    public event Func<GameObject, GameObject> OnEnemySpawnRequested;
-    public event Action OnWaveEnd;
+    public Action OnWaveEnd;
+
+    public void Initialize(Transform spawn)
+    {
+        spawnPoint = spawn;
+    }
 
     public IEnumerator RunWave()
     {
+        Debug.Log($"Wave starting. Enemy count: {enemies.Count}");
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            Debug.Log($"Enemy prefab in list [{i}]: {enemies[i].name}");
+        }
         for (int i = 0; i < enemies.Count; i++)
         {
             var enemyPrefab = enemies[i];
-            var enemyInstance = OnEnemySpawnRequested?.Invoke(enemyPrefab);
+
+            var enemyInstance = GameObject.Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+            if (enemyInstance == null)
+            {
+                Debug.LogError($"Failed to spawn enemy: {enemyPrefab.name}");
+                continue;
+            }
 
             aliveEnemies++;
 
-            enemyInstance.GetComponent<IDamageable>().OnDeath += HandleEnemyDeath;
+            var damageable = enemyInstance.GetComponent<IDamageable>();
+            if (damageable != null)
+            {
+                damageable.OnDeath += HandleEnemyDeath;
+            }
+            else
+            {
+                Debug.LogWarning($"Enemy {enemyInstance.name} has no IDamageable component!");
+            }
 
             yield return new WaitForSeconds(UnityEngine.Random.Range(enemySpawnInterval - 0.25f, enemySpawnInterval + 0.25f));
         }

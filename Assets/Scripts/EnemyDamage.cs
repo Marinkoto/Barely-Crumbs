@@ -12,7 +12,7 @@ public class EnemyDamage : MonoBehaviour
         if (other.gameObject.TryGetComponent(out TowerLayer layer))
         {
             layer.TakeDamage(damage);
+            Destroy(gameObject);
         }
-        GetComponent<IDamageable>().TakeDamage(999);
     }
 }

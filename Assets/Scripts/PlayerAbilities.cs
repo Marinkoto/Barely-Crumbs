@@ -11,9 +11,6 @@ public class PlayerAbilities : Singleton<PlayerAbilities>
 
     public void AssignAbility(AbilityBullet ability)
     {
-        if (HasAbility())
-            return;
-
         currentAbility = Instantiate(ability, abilityPosition.position, Quaternion.identity);
         trajectoryDrawer.active = true;
     }

@@ -4,6 +4,7 @@ public class TrajectoryDrawer : MonoBehaviour
 {
     public LineRenderer lineRenderer;
     public float bulletSpeed = 5f;
+    public Transform firePoint;
 
     private Vector3 endPoint;
     private bool isDragging = false;
@@ -25,14 +26,14 @@ public class TrajectoryDrawer : MonoBehaviour
         {
             endPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             endPoint.z = 0;
-            DrawCurvePreview(transform.position, endPoint);
+            DrawCurvePreview(firePoint.position, endPoint);
             Time.timeScale = 0.25f;
         }
 
         if (Input.GetMouseButtonUp(0) && isDragging)
         {
             isDragging = false;
-            ShootBulletAlongCurve(transform.position, endPoint);
+            ShootBulletAlongCurve(firePoint.position, endPoint);
             lineRenderer.positionCount = 0;
             Time.timeScale = 1;
         }

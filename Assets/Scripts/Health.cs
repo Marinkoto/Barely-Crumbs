@@ -12,14 +12,14 @@ public class Health : MonoBehaviour, IDamageable
     public Action OnDeath { get; set; }
     public Action<int> OnDamage { get; set; }
 
-    public void TakeDamage(int amount)
+    public virtual void TakeDamage(int amount)
     {
         health -= amount;
         OnDamage?.Invoke(amount);
         if (health <= 0)
             Die();
     }
-    protected virtual void Die()
+    public virtual void Die()
     {
         OnDeath?.Invoke();
         Destroy(gameObject);

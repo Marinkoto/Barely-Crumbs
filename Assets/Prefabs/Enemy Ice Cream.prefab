@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 6429105419929518093}
   - component: {fileID: -4739831302801132621}
   - component: {fileID: -1506491573286252132}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Enemy Ice Cream
   m_TagString: Untagged
   m_Icon: {fileID: 0}

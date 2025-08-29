@@ -3,10 +3,15 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class AbilityBullet : MonoBehaviour
 {
+    [Header("Components")]
+    [SerializeField] AbilityEffect abilityEffect;
+    [SerializeField] Vector3 abilityOffset;
+
+    [HideInInspector] public bool shot = false;
+
     private Vector2 p0, p1, p2;
     private float speed;
     private float t = 0f;
-    public bool shot = false;
     private Rigidbody2D rb;
 
     public void SetBezierCurve(Vector2 start, Vector2 control, Vector2 end, float moveSpeed)
@@ -34,7 +39,8 @@ public class AbilityBullet : MonoBehaviour
 
         if (t >= 1f)
         {
-            Destroy(gameObject);
+            rb.isKinematic = false;
+            rb.gravityScale = 1f;
             return;
         }
 
@@ -53,8 +59,13 @@ public class AbilityBullet : MonoBehaviour
         rb.MovePosition(bezierPos);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void ActivateAbility()
     {
+        Instantiate(abilityEffect, transform.position + abilityOffset, abilityEffect.transform.rotation);
         Destroy(gameObject);
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        ActivateAbility();
     }
 }

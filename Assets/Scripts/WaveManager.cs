@@ -4,8 +4,8 @@ using UnityEngine;
 public class WaveManager : MonoBehaviour
 {
     [Header("Components")]
-    [SerializeField] List<Wave> waves;
-    [SerializeField] Transform spawnPoint;
+    [SerializeField] private List<Wave> waves;
+    [SerializeField] private Transform spawnPoint;
 
     private int currentWaveIndex = 0;
 
@@ -19,24 +19,17 @@ public class WaveManager : MonoBehaviour
 
     private void StartWave(Wave wave)
     {
+        wave.Initialize(spawnPoint);
         wave.OnWaveEnd += HandleWaveEnd;
-        wave.OnEnemySpawnRequested += SpawnEnemy;
-
         StartCoroutine(wave.RunWave());
-    }
-
-    private GameObject SpawnEnemy(GameObject prefab)
-    {
-        return Instantiate(prefab, spawnPoint.position, Quaternion.identity);
+        Debug.Log($"Wave {currentWaveIndex + 1} started");
     }
 
     private void HandleWaveEnd()
     {
         waves[currentWaveIndex].OnWaveEnd -= HandleWaveEnd;
-        waves[currentWaveIndex].OnEnemySpawnRequested -= SpawnEnemy;
 
         currentWaveIndex++;
-
         if (currentWaveIndex >= waves.Count)
         {
             EndBattle();
@@ -49,6 +42,6 @@ public class WaveManager : MonoBehaviour
 
     private void EndBattle()
     {
-        Debug.Log("End Battle");
+        Debug.Log("All waves completed! Battle ended.");
     }
 }
