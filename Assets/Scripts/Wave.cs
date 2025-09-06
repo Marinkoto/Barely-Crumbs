@@ -11,7 +11,7 @@ public class Wave
     [Header("Parameters")]
     [SerializeField] private float enemySpawnInterval = 1f;
 
-    private int aliveEnemies = 0;
+    public int aliveEnemies = 0;
     private Transform spawnPoint;
 
     public Action OnWaveEnd;
@@ -23,11 +23,7 @@ public class Wave
 
     public IEnumerator RunWave()
     {
-        Debug.Log($"Wave starting. Enemy count: {enemies.Count}");
-        for (int i = 0; i < enemies.Count; i++)
-        {
-            Debug.Log($"Enemy prefab in list [{i}]: {enemies[i].name}");
-        }
+
         for (int i = 0; i < enemies.Count; i++)
         {
             var enemyPrefab = enemies[i];
@@ -59,8 +55,9 @@ public class Wave
         OnWaveEnd?.Invoke();
     }
 
-    private void HandleEnemyDeath()
+    private void HandleEnemyDeath(IDamageable enemy)
     {
-        aliveEnemies--;
+        aliveEnemies = Mathf.Max(0, aliveEnemies - 1);
+        enemy.OnDeath -= HandleEnemyDeath; 
     }
 }

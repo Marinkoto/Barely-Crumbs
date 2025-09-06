@@ -5,7 +5,7 @@ using UnityEngine;
 
 public interface IDamageable
 {
-    Action OnDeath { get; set; }
+    Action<IDamageable> OnDeath { get; set; }
     Action<int> OnDamage { get; set; }
     public void TakeDamage(int amount);
 }

@@ -7,7 +7,7 @@ public class TrajectoryDrawer : MonoBehaviour
     public Transform firePoint;
 
     private Vector3 endPoint;
-    private bool isDragging = false;
+    public bool isDragging = false;
     public bool active = false;
 
     void Update()
@@ -16,20 +16,23 @@ public class TrajectoryDrawer : MonoBehaviour
         {
             return;
         }
-
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            isDragging = false;
+            Time.timeScale = 1;
+            lineRenderer.positionCount = 0;
+        }
         if (Input.GetMouseButtonDown(0))
         {
             isDragging = true;
         }
-
         if (Input.GetMouseButton(0) && isDragging)
         {
             endPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             endPoint.z = 0;
             DrawCurvePreview(firePoint.position, endPoint);
-            Time.timeScale = 0.25f;
+            Time.timeScale = 0.5f;
         }
-
         if (Input.GetMouseButtonUp(0) && isDragging)
         {
             isDragging = false;
@@ -37,6 +40,7 @@ public class TrajectoryDrawer : MonoBehaviour
             lineRenderer.positionCount = 0;
             Time.timeScale = 1;
         }
+        CharacterEffects.Instance.SlowMoEffect(isDragging);
     }
 
     void DrawCurvePreview(Vector3 start, Vector3 end)

@@ -9,8 +9,11 @@ public class AbilityEffect : MonoBehaviour
     public Action EffectDeactivated;
     public AbilityType type;
     public LayerMask enemyLayer;
+    [SerializeField] AudioSource source;
+    [SerializeField] AudioClip effectInitialize;
     private void Start()
     {
+        AudioManager.Instance.PlaySound(source, effectInitialize, true);
         switch (type)
         {
             case AbilityType.Cookie:
@@ -25,11 +28,10 @@ public class AbilityEffect : MonoBehaviour
                                 var enemy = hit.GetComponent<Health>();
                                 if (enemy != null)
                                 {
-                                    enemy.TakeDamage(15);
+                                    enemy.TakeDamage(20);
                                 }
                             }
                         }
-                        Destroy(gameObject, 10f);
                     };
                     EffectDeactivated = () =>
                     {
@@ -41,7 +43,7 @@ public class AbilityEffect : MonoBehaviour
                 {
                     EffectActivated = () =>
                     {
-                        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 1, enemyLayer);
+                        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 2, enemyLayer);
                         if (hits.Length >= 1)
                         {
                             foreach (var hit in hits)
@@ -61,7 +63,7 @@ public class AbilityEffect : MonoBehaviour
                                 var enemy = hit.GetComponent<EnemyMovement>();
                                 if (enemy != null)
                                 {
-                                    enemy.ResetMoveSpeed(); 
+                                    enemy.ResetMoveSpeed();
                                 }
                             }
                         }

@@ -1,12 +1,15 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WaveManager : MonoBehaviour
+public class WaveManager : Singleton<WaveManager>
 {
     [Header("Components")]
     [SerializeField] private List<Wave> waves;
     [SerializeField] private Transform spawnPoint;
 
+    public static Action<int> OnWaveEnd;
+    public static Action OnBattleEnd;
     private int currentWaveIndex = 0;
 
     private void Start()
@@ -29,19 +32,23 @@ public class WaveManager : MonoBehaviour
     {
         waves[currentWaveIndex].OnWaveEnd -= HandleWaveEnd;
 
-        currentWaveIndex++;
-        if (currentWaveIndex >= waves.Count)
+        if (currentWaveIndex == waves.Count - 1)
         {
-            EndBattle();
+            if (waves[currentWaveIndex].aliveEnemies <= 0)
+            {
+                EndBattle();
+            }
         }
         else
         {
+            currentWaveIndex++;
             StartWave(waves[currentWaveIndex]);
+            OnWaveEnd?.Invoke(currentWaveIndex);
         }
     }
 
     private void EndBattle()
     {
-        Debug.Log("All waves completed! Battle ended.");
+        OnBattleEnd?.Invoke();
     }
 }

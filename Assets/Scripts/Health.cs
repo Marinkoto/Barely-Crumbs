@@ -8,12 +8,16 @@ public class Health : MonoBehaviour, IDamageable
     [Header("Parameters")]
     [SerializeField] protected int health;
     [SerializeField] protected int maxHealth;
-
-    public Action OnDeath { get; set; }
+    [SerializeField] float hitCooldown = 0.75f;
+    float lastHitTime;
+    public Action<IDamageable> OnDeath { get; set; }
     public Action<int> OnDamage { get; set; }
 
     public virtual void TakeDamage(int amount)
     {
+        if (Time.time - lastHitTime < hitCooldown) return;
+
+        lastHitTime = Time.time;
         health -= amount;
         OnDamage?.Invoke(amount);
         if (health <= 0)
@@ -21,7 +25,12 @@ public class Health : MonoBehaviour, IDamageable
     }
     public virtual void Die()
     {
-        OnDeath?.Invoke();
+        OnDeath?.Invoke(this);
         Destroy(gameObject);
+    }
+    private void OnDestroy()
+    {
+        OnDeath?.Invoke(this);
+        EnemyManager.Enemies.Remove(transform);
     }
 }
