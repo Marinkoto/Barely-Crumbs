@@ -16,7 +16,7 @@ public class TrajectoryDrawer : MonoBehaviour
         {
             return;
         }
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             isDragging = false;
             Time.timeScale = 1;
